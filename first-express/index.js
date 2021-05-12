@@ -8,18 +8,11 @@ const PORT = 8080;
 server.use(express.json())
 
 // RUTA KODERS HTTP PUT,POST,GET
-// Practica fs + express
-/*
-  // GET /Koders -> reegresa un json con una lista de koders
-  La lista de koders viene de un archivo
-*/
-
 server.get('/', (req, res) => {
     res.write('GET: Ruta inicial');
     res.end();
 })
 server.get('/koders', (req, res) => {
-    
     fs.readFile('koders.json', 'utf-8', (err, data) => {
         if (err) {
             console.error('ERROR: ', err);
@@ -29,8 +22,18 @@ server.get('/koders', (req, res) => {
 })
 
 server.post('/koders', (req, res) => {
-    const cuerpo = req.body;
-    console.log('Body: ', cuerpo);
+    const newKoder = req.body;
+    let allKoders = JSON.parse(fs.readFileSync('koders.json', 'utf-8'))
+    allKoders.koders.push(newKoder)
+    
+    fs.writeFile('koders.json', JSON.stringify(allKoders) ,err => {
+        if (err) {
+            console.error('ERROR: ', err)
+            res.status(401);
+            res.end()
+        }
+    })
+    // escribir usando fs
     res.status(201);
     res.json({
         message: 'ok'
