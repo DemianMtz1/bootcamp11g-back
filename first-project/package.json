@@ -1,0 +1,16 @@
+{
+  "name": "first-project",
+  "version": "1.0.0",
+  "description": "mi primer proyecto",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo 'aqui van los tests'",
+    "eric": "echo 'Hola Eric'"
+  },
+  "author": "@DemianMtz1",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0"
+  }
+}
