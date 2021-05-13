@@ -29,7 +29,7 @@ server.get('/koders/:id', (req, res) => {
     let filteredKoder = allKoders.koders.find(koder => koder.id === id)
 
     res.status(201);
-    res.json(filteredKoder ? filteredKoder: {message: 'Koder no encontrado'})
+    res.json(filteredKoder ? filteredKoder : { message: 'Koder no encontrado' })
 })
 
 server.post('/koders', (req, res) => {
@@ -58,7 +58,7 @@ server.put('/koders', (req, res) => {
 });
 
 server.patch('/koders/:id', (req, res) => {
-    
+
     const id = parseInt(req.params.id);
     const name = req.body.name;
     let allKoders = JSON.parse(fs.readFileSync('koders.json', 'utf-8'));
@@ -92,12 +92,20 @@ server.patch('/koders/:id', (req, res) => {
 
 
 server.delete('/koders/:id', (req, res) => {
-    
+
     const id = parseInt(req.params.id);
     const name = req.body.name;
     let allKoders = JSON.parse(fs.readFileSync('koders.json', 'utf-8'));
 
-    let newKoders = allKoders.koders.filter(koder => koder.id !== id)
+    //let newKoders = allKoders.koders.filter(koder => koder.id !== id)
+    let newKoders = allKoders.koders.reduce((koders, koder) => {
+        if (id !== koder.id) {
+            koders.push(koder)
+        }
+
+        return koders
+    }, []);
+
 
     allKoders.koders = newKoders
 
