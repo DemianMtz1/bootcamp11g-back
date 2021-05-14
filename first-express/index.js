@@ -1,5 +1,6 @@
 const fs = require('fs');
 const express = require('express');
+const { json } = require('express');
 const server = express();
 
 const PORT = 8080;
@@ -12,7 +13,7 @@ server.get('/', (req, res) => {
     res.write('GET: Ruta inicial');
     res.end();
 })
-
+/*
 server.get('/koders', (req, res) => {
     fs.readFile('koders.json', 'utf-8', (err, data) => {
         if (err) {
@@ -21,15 +22,38 @@ server.get('/koders', (req, res) => {
         res.json(JSON.parse(data))
     })
 })
-
-server.get('/koders/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+*/
+server.get('/koders', (req, res) => {
+    const genderFilter = req.query.gender;
+    const count = req.query.count;
     let allKoders = JSON.parse(fs.readFileSync('koders.json', 'utf-8'));
 
-    let filteredKoder = allKoders.koders.find(koder => koder.id === id)
+    let kodersData = null;
 
-    res.status(201);
-    res.json(filteredKoder ? filteredKoder : { message: 'Koder no encontrado' })
+    if (genderFilter) {
+        const kodersFilteredByGender = allKoders.koders.filter(koder => koder.gender === genderFilter);
+        kodersData = kodersFilteredByGender;
+    }
+
+    let kodersCount = null;
+    if (count) {
+        kodersCount = []
+        if (kodersData) {
+            kodersData.forEach((koder, idx) => {
+                if (idx < count) {
+                    kodersCount.push(koder)
+                }
+            })
+        } else {
+            allKoders.forEach((koder, idx) => {
+                if (idx < count) {
+                    kodersCount.push(koder)
+                }
+            })
+        }
+    }
+    allKoders.koders = kodersCount || kodersData || allKoders.koders;
+    res.json(allKoders.koders)
 })
 
 server.post('/koders', (req, res) => {
